@@ -1,9 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type {IUser} from "@/interfaces/IUser.ts";
-
-const API_URL = 'http://localhost:3000'
-
+import { API_URL } from '@/main.ts'
 
 export const useSessionStore = defineStore('session',
   () => {
@@ -28,19 +26,26 @@ export const useSessionStore = defineStore('session',
     }
 
     const aFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-      return fetch(input, {
+      const response = await fetch(`${API_URL}${input}`, {
         ...init,
         headers: {
           ...init?.headers,
           Authorization: `Bearer ${sessionToken.value}`,
         },
       })
+
+      if (response.status === 401) {
+        user.value = null
+        sessionToken.value = null
+        window.location.reload();
+      }
+
+      return response;
     }
 
     return {
       user: user,
-      sessionToken, authenticated, authenticate
+      sessionToken, authenticated, authenticate, aFetch
     }
   },
-
 )
