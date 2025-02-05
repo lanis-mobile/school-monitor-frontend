@@ -13,7 +13,7 @@ dataStore.fetchData()
 
   <div class="h-full flex-1 flex flex-row flex-nowrap pt-14">
     <div class="bg-gray-950 w-3/4 p-2">
-      <MainSchoolsComparedLineChart :data="dataStore.data ?? {}" />
+      <MainSchoolsComparedLineChart :data="dataStore.data ?? {data: {}, uniqueDaysInOrder: []}" />
     </div>
     <div class="w-1/4 p-2 flex flex-col flex-nowrap h-full">
       <SchoolSearcher class="h-full" />

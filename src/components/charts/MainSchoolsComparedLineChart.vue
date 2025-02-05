@@ -77,11 +77,10 @@ const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
       nearest: true,
       trigger: "item",
       formatter: function (params) {
+        // @ts-expect-error seriesName exists
         const schoolInfo = dataStore.getSchoolName(params.seriesName);
-        return `<b>[${params.seriesName}] ${schoolInfo.Name}:</b> ${params.value} logins<br>
-                <b>Ort:</b> ${schoolInfo.Ort}<br>
-                <b>Region:</b> ${schoolInfo.bezirk.name} (${schoolInfo.bezirk.id})<br>
-                <b>Date:</b> ${params.name}`;
+        // @ts-expect-error seriesName exists
+        return `<b>[${params.seriesName}] ${schoolInfo.Name}:</b> ${params.value} logins<br><b>Ort:</b> ${schoolInfo.Ort}<br><b>Region:</b> ${schoolInfo.bezirk.name} (${schoolInfo.bezirk.id})<br><b>Date:</b> ${params.name}`;
       }
     },
     backgroundColor: 'transparent',
