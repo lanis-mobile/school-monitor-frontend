@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { use } from 'echarts/core';
+// keeping in case of change due to performance when there are ~1000 schools?
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
 import type { EChartsOption } from 'echarts/types/dist/shared';
@@ -24,6 +25,7 @@ use([
   GridComponent,
   LegendComponent
 ]);
+
 
 
 const props = defineProps<{
@@ -52,25 +54,34 @@ const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
   return {
     xAxis: {
       type: 'category',
-      data: props.data.uniqueDaysInOrder
+      data: props.data.uniqueDaysInOrder,
+      name: 'Date',
     },
     yAxis: {
       type: 'value',
       axisLabel: {
         formatter: '{value} logins'
-      }
+      },
     },
     series: keys.map(key => ({
       data: getSeries(props.data.data[key], props.data.uniqueDaysInOrder),
       type: 'line',
       smooth: true,
-      name: dataStore.getSchoolName(key),
+      name: key,
+      emphasis: {
+        focus: 'series',
+
+      },
     })),
     tooltip: {
       nearest: true,
       trigger: "item",
       formatter: function (params) {
-        return `<b>${params.seriesName}:</b> ${params.value} logins<br><b>Date:</b> ${params.name}`;
+        const schoolInfo = dataStore.getSchoolName(params.seriesName);
+        return `<b>[${params.seriesName}] ${schoolInfo.Name}:</b> ${params.value} logins<br>
+                <b>Ort:</b> ${schoolInfo.Ort}<br>
+                <b>Region:</b> ${schoolInfo.bezirk.name} (${schoolInfo.bezirk.id})<br>
+                <b>Date:</b> ${params.name}`;
       }
     },
     backgroundColor: 'transparent',
@@ -81,7 +92,7 @@ const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
 
 <template>
   <div class="text-white h-full w-full">
-    <v-chart :option="echartsOptions" autoresize />
+    <v-chart ref="echartRef" :option="echartsOptions"  autoresize />
   </div>
 
 </template>

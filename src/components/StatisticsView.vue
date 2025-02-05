@@ -2,8 +2,10 @@
 import { useDataStore } from '@/stores/data.ts'
 import MainSchoolsComparedLineChart from '@/components/charts/MainSchoolsComparedLineChart.vue'
 import SchoolSearcher from '@/components/SchoolSearcher.vue'
+import { useSessionStore } from '@/stores/session.ts'
 
 const dataStore = useDataStore()
+const sessionStore = useSessionStore()
 dataStore.fetchData()
 </script>
 
@@ -19,7 +21,11 @@ dataStore.fetchData()
   </div>
   <div class="absolute top-0 h-14 bg-slate-700 shadow w-full flex flex-row flex-nowrap items-center px-4">
     <span class="text-2xl text-sky-50">Lanis-School Monitor</span>
-    <div class="flex-1"></div>
+    <span class="flex-1 px-2 border-l-2 border-l-white ml-2">
+      Total Logins: {{ dataStore.combinedLoginCount }}
+    </span>
+    <div v-if="sessionStore.user?.admin" class="bg-red-500 text-white p-4 mx-2 select-none hover:cursor-pointer hover:scale-105">Access Management</div>
+
     <div class="bg-gray-900 text-white p-4 select-none hover:cursor-pointer hover:scale-105" @click="dataStore.fetchData">Refresh</div>
   </div>
 </template>

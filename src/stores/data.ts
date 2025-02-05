@@ -30,9 +30,41 @@ export const useDataStore = defineStore('data',
 
     fetchBezirkList();
 
-    const getSchoolName = (schoolId: string) => schoolList.value.find(school => school.Id === schoolId)?.Name;
+    const getSchoolName = (schoolId: string) => {
+      const bezirk = bezirkList.value.find(bezirk => bezirk.Schulen.some(schule => schule.Id === schoolId));
+      const schule = bezirk?.Schulen.find(schule => schule.Id === schoolId);
+      return {
+        ...schule,
+        bezirk: {
+          id: bezirk?.Id,
+          name: bezirk?.Name
+        }
+      }
+    }
 
-    return {data, fetchData, getSchoolName, bezirkList, schoolList}
+    const combinedLoginCount = computed(() => {
+      if (!data.value) return 0;
+      let result = 0;
+      for (const schoolId of Object.keys(data.value.data)) {
+        console.log(schoolId);
+        for (const day of data.value.data[schoolId]) {
+          result += day.entry_count;
+        }
+      }
+      return result;
+    });
+
+    const getSchoolLoginCount = (schoolId: string): number => {
+      if (!data.value) return 0;
+      let total = 0;
+      if (!data.value.data[schoolId]) return 0;
+      for (const day of data.value.data[schoolId]) {
+        total += day.entry_count;
+      }
+      return total;
+    }
+
+    return {data, fetchData, getSchoolName, bezirkList, schoolList, combinedLoginCount, getSchoolLoginCount}
   },
 
 )

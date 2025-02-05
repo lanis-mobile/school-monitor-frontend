@@ -1,12 +1,12 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
-import type {IUser} from "@/interfaces/IUser.ts";
+import type { IUser } from '@/interfaces/IUser.ts'
 import { API_URL } from '@/main.ts'
 
 export const useSessionStore = defineStore('session',
   () => {
-    const user = ref<IUser | null>(null)
-    const sessionToken = ref<string | null>(null)
+    const user = ref<IUser | null>(JSON.parse(sessionStorage.getItem('user') || 'null'))
+    const sessionToken = ref<string | null>(sessionStorage.getItem('sessionToken'))
     const authenticated = computed(() => user.value !== null)
 
     const authenticate = async (username: string, totp: string): Promise<boolean> => {
@@ -21,6 +21,7 @@ export const useSessionStore = defineStore('session',
         }
         return response.ok
       } catch (e) {
+        console.warn(e)
         return false
       }
     }
@@ -37,15 +38,37 @@ export const useSessionStore = defineStore('session',
       if (response.status === 401) {
         user.value = null
         sessionToken.value = null
+        sessionStorage.removeItem('user')
+        sessionStorage.removeItem('sessionToken')
         window.location.reload();
       }
 
       return response;
     }
 
+    // Watch for changes and update sessionStorage
+    watch(user, (newUser) => {
+      if (newUser) {
+        sessionStorage.setItem('user', JSON.stringify(newUser))
+      } else {
+        sessionStorage.removeItem('user')
+      }
+    })
+
+    watch(sessionToken, (newToken) => {
+      if (newToken) {
+        sessionStorage.setItem('sessionToken', newToken)
+      } else {
+        sessionStorage.removeItem('sessionToken')
+      }
+    })
+
     return {
-      user: user,
-      sessionToken, authenticated, authenticate, aFetch
+      user,
+      sessionToken,
+      authenticated,
+      authenticate,
+      aFetch
     }
   },
 )
