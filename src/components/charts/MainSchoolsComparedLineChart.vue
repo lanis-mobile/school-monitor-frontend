@@ -41,6 +41,7 @@ function getSeries(
   return series.sort()
 }
 
+// @ts-expect-error configuration is valid
 const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
   const keys = Object.keys(props.data.data ?? {})
   // format YYYY-MM-DD
