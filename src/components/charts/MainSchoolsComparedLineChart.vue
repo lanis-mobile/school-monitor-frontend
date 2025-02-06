@@ -3,7 +3,7 @@ import { use } from 'echarts/core'
 // keeping in case of change due to performance when there are ~1000 schools?
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart } from 'echarts/charts'
-import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { CallbackDataParams, EChartsOption } from 'echarts/types/dist/shared'
 import {
   GridComponent,
   LegendComponent,
@@ -38,12 +38,12 @@ function getSeries(
     const entry = data.find((d) => d.day === day)
     series.push(entry ? entry.entry_count : 0)
   })
-  // sorting jjjj-mm-dd strings by alphabetical order is the same as sorting by date
   return series.sort()
 }
 
 const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
   const keys = Object.keys(props.data.data ?? {})
+  // format YYYY-MM-DD
   const sortedUniqueDays = [...props.data.uniqueDaysInOrder].sort()
   return {
     xAxis: {
@@ -57,23 +57,45 @@ const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
         formatter: '{value} logins',
       },
     },
+    toolbox: {
+      feature: {
+        saveAsImage: {},
+      }
+    },
     series: keys.map((key) => ({
       data: getSeries(props.data.data[key], sortedUniqueDays),
       type: 'line',
+      displayName: dataStore.getSchoolInfo(key).Name,
       smooth: true,
       name: key,
       emphasis: {
-        focus: 'series',
+        focus: 'none',
       },
     })),
     tooltip: {
       nearest: true,
-      trigger: 'item',
-      formatter: function (params) {
-        // @ts-expect-error seriesName exists
-        const schoolInfo = dataStore.getSchoolName(params.seriesName)
-        // @ts-expect-error seriesName exists
-        return `<b>[${params.seriesName}] ${schoolInfo.Name}:</b> ${params.value} logins<br><b>Ort:</b> ${schoolInfo.Ort}<br><b>Region:</b> ${schoolInfo.bezirk.name} (${schoolInfo.bezirk.id})<br><b>Date:</b> ${params.name}`
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+      },
+      formatter: function (params: CallbackDataParams[]) {
+        const limit = 25
+        let hidden = 0
+
+        // @ts-expect-error data exists
+        let sorted = [...params].filter(value => value.value !== 0).sort((a, b) => b.value - a.value)
+        if (sorted.length > limit) {
+          hidden = sorted.length - limit
+          sorted = sorted.slice(0, limit)
+        }
+        const stringparts = sorted.map((param) => {
+          // @ts-expect-error data exists
+          const schoolInfo = dataStore.getSchoolInfo(param.seriesName)
+          return `<div style="background-color: ${param.color}" class="rounded-full h-2 w-2 inline-flex mr-1"></div><b>${param.seriesName} ${schoolInfo.Name} ${schoolInfo.Ort}:</b> ${param.value}<br>`
+        })
+        // @ts-expect-error data exists
+        const total = params.reduce((acc, curr) => acc + curr.value, 0)
+        return `${params[0].name}  <b>Total logins: ${total}</b><br>${stringparts.join('')}<i>${hidden} more schools hidden</i>`
       },
     },
     backgroundColor: 'transparent',

@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, type ComputedRef, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { ILoginsData } from '@/interfaces/ILoginsData.ts'
 import { useSessionStore } from '@/stores/session.ts'
@@ -63,7 +63,20 @@ export const useDataStore = defineStore('data',
       return total;
     }
 
-    return {data, fetchData, getSchoolName, bezirkList, schoolList, combinedLoginCount, getSchoolLoginCount}
+    const activeSchoolList: ComputedRef<{   Id: string, Name: string, Ort: string }[]> = computed(() => {
+      if (!data.value) return [];
+      return schoolList.value
+        .filter(school => data.value?.data[school.Id] !== undefined)
+        .map(school => ({
+          Id: school.Id,
+          Name: school.Name,
+          Ort: school.Ort,
+          entry_count: getSchoolLoginCount(school.Id)
+        }))
+        .sort((a, b) => b.entry_count - a.entry_count)
+    });
+
+    return {data, fetchData, getSchoolInfo: getSchoolName, bezirkList, schoolList, activeSchoolList, combinedLoginCount, getSchoolLoginCount}
   },
 
 )

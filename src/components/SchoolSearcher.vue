@@ -13,9 +13,9 @@ function normalize(s: string): string {
 }
 
 const searchResult = computed(() => {
-  if (!search.value) return dataStore.schoolList
+  if (!search.value) return dataStore.activeSchoolList
   const normalizedSearch = normalize(search.value)
-  return dataStore.schoolList.filter(school => {
+  return dataStore.activeSchoolList.filter(school => {
     return normalize(school.Name).includes(normalizedSearch) || normalize(school.Ort).includes(normalizedSearch) || normalize(school.Id).includes(normalizedSearch)
   })
 })
