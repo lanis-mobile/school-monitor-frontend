@@ -38,7 +38,7 @@ function getSeries(
     const entry = data.find((d) => d.day === day)
     series.push(entry ? entry.entry_count : 0)
   })
-  return series.sort()
+  return series
 }
 
 // @ts-expect-error configuration is valid
