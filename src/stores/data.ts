@@ -46,7 +46,6 @@ export const useDataStore = defineStore('data',
       if (!data.value) return 0;
       let result = 0;
       for (const schoolId of Object.keys(data.value.data)) {
-        console.log(schoolId);
         for (const day of data.value.data[schoolId]) {
           result += day.entry_count;
         }
