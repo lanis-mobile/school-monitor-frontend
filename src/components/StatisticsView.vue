@@ -32,6 +32,22 @@ watch(autoRefresh, (value) => {
     clearInterval(interval)
   }
 })
+
+function downloadFile(filename: string, data: string) {
+  const element = document.createElement('a')
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data))
+  element.setAttribute('download', filename)
+
+  element.style.display = 'none'
+  document.body.appendChild(element)
+
+  element.click()
+
+  document.body.removeChild(element)
+}
+
+const downloadCSV = () => downloadFile('data.csv', dataStore.dataToCsv())
+
 </script>
 
 <template>
@@ -60,7 +76,7 @@ watch(autoRefresh, (value) => {
         {{ key }}
       </option>
     </select>
-
+    <div class="bg-gray-900 text-white p-4 select-none hover:cursor-pointer hover:scale-105" @click="downloadCSV">Download CSV</div>
     <div v-if="sessionStore.user?.admin" class="bg-red-500 text-white p-4 mx-2 select-none hover:cursor-pointer hover:scale-105">Access Management</div>
     <div class="bg-gray-900 text-white p-4 select-none hover:cursor-pointer hover:scale-105" @click="dataStore.fetchData">
       Refresh

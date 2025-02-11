@@ -76,7 +76,23 @@ export const useDataStore = defineStore('data',
         .sort((a, b) => b.entry_count - a.entry_count)
     });
 
-    return {data, fetchData, getSchoolInfo: getSchoolName, bezirkList, schoolList, activeSchoolList, combinedLoginCount, getSchoolLoginCount}
+    const dataToCsv = (): string => {
+      if (!data.value) return '';
+      const header = ['Date', ...activeSchoolList.value.map(school => `"${school.Name} (${school.Ort}, ${school.Id})"`)];
+      const rows = [];
+      rows.push(header.join(','));
+      ([...data.value.uniqueDaysInOrder].sort()).forEach(day => {
+        const row = [day];
+        activeSchoolList.value.forEach(school => {
+          const entry = data.value!.data[school.Id].find(entry => entry.day === day);
+          row.push(entry?.entry_count.toString() ?? '0');
+        });
+        rows.push(row.map(value => `"${value}"`).join(','));
+      });
+      return rows.join('\n');
+    }
+
+    return {data, fetchData, getSchoolInfo: getSchoolName, bezirkList, schoolList, activeSchoolList, combinedLoginCount, getSchoolLoginCount, dataToCsv}
   },
 
 )

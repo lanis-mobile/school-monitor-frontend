@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { use } from 'echarts/core'
-// keeping in case of change due to performance when there are ~1000 schools?
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart, BarChart } from 'echarts/charts'
 import type { CallbackDataParams, EChartsOption } from 'echarts/types/dist/shared'
@@ -13,9 +12,6 @@ import {
 import VChart from 'vue-echarts'
 import type { ILoginsData } from '@/interfaces/ILoginsData.ts'
 import { computed, type ComputedRef } from 'vue'
-import { useDataStore } from '@/stores/data.ts'
-
-const dataStore = useDataStore()
 
 use([CanvasRenderer, LineChart, BarChart, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LegendComponent])
 
