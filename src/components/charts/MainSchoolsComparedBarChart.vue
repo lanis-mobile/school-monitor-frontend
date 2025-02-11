@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { use } from 'echarts/core'
 // keeping in case of change due to performance when there are ~1000 schools?
 import { CanvasRenderer } from 'echarts/renderers'
@@ -23,25 +23,23 @@ const props = defineProps<{
   data: ILoginsData
 }>()
 
-//fills in missing days with 0 logins and returns the normalized data
-function getSeries(
-  data: {
-    school_id: number
-    day: string
-    entry_count: number
-  }[],
-  keys: string[],
-): number[] {
-  const series: number[] = []
+// Returns the total logins per day
+function getTotalLoginsSeries(data: ILoginsData, keys: string[]): number[] {
+  const loginsPerDay: Record<string, number> = {}
 
   keys.forEach((day) => {
-    const entry = data.find((d) => d.day === day)
-    series.push(entry ? entry.entry_count : 0)
+    loginsPerDay[day] = 0
   })
-  return series
+
+  Object.keys(data.data).forEach((school) => {
+    data.data[school].forEach((entry) => {
+      loginsPerDay[entry.day] += entry.entry_count
+    })
+  })
+
+  return keys.map((day) => loginsPerDay[day])
 }
 
-// @ts-expect-error configuration is valid
 const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
   const keys = Object.keys(props.data.data ?? {})
   // format YYYY-MM-DD
@@ -63,40 +61,28 @@ const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
         saveAsImage: {},
       }
     },
-    series: keys.map((key) => ({
-      data: getSeries(props.data.data[key], sortedUniqueDays),
-      type: 'line',
-      displayName: dataStore.getSchoolInfo(key).Name,
+    series: {
+      data: getTotalLoginsSeries(props.data, sortedUniqueDays),
+      type: 'bar',
+      displayName: 'Total logins',
       smooth: true,
-      name: key,
       emphasis: {
         focus: 'none',
       },
-    })),
+    },
     tooltip: {
       nearest: true,
       trigger: 'axis',
       axisPointer: {
         type: 'shadow',
       },
-      formatter: function (params: CallbackDataParams[]) {
-        const limit = 25
-        let hidden = 0
+      formatter: function (param: CallbackDataParams[]) {
+        const logins = param[0].value
+        // format YYYY-MM-DD
+        const date = param[0].name
+        const weekdaystrgerman = new Date(date).toLocaleDateString('de-DE', { weekday: 'long' })
 
-        // @ts-expect-error data exists
-        let sorted = [...params].filter(value => value.value !== 0).sort((a, b) => b.value - a.value)
-        if (sorted.length > limit) {
-          hidden = sorted.length - limit
-          sorted = sorted.slice(0, limit)
-        }
-        const stringparts = sorted.map((param) => {
-          // @ts-expect-error data exists
-          const schoolInfo = dataStore.getSchoolInfo(param.seriesName)
-          return `<div style="background-color: ${param.color}" class="rounded-full h-2 w-2 inline-flex mr-1"></div><b>${param.seriesName} ${schoolInfo.Name} ${schoolInfo.Ort}:</b> ${param.value}<br>`
-        })
-        // @ts-expect-error data exists
-        const total = params.reduce((acc, curr) => acc + curr.value, 0)
-        return `${params[0].name}  <b>Total logins: ${total}</b><br>${stringparts.join('')}<i>${hidden} more schools hidden</i>`
+        return `${date}<br>${weekdaystrgerman}<br><b>${logins}</b> logins`
       },
     },
     backgroundColor: 'transparent',
@@ -109,5 +95,3 @@ const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
     <v-chart ref="echartRef" :option="echartsOptions" autoresize />
   </div>
 </template>
-
-<style scoped></style>
