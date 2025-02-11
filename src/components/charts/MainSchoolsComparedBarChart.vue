@@ -40,8 +40,8 @@ function getTotalLoginsSeries(data: ILoginsData, keys: string[]): number[] {
   return keys.map((day) => loginsPerDay[day])
 }
 
+// @ts-expect-error configuration is valid
 const echartsOptions: ComputedRef<EChartsOption> = computed(() => {
-  const keys = Object.keys(props.data.data ?? {})
   // format YYYY-MM-DD
   const sortedUniqueDays = [...props.data.uniqueDaysInOrder].sort()
   return {
