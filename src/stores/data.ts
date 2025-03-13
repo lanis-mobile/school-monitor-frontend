@@ -4,6 +4,7 @@ import type { ILoginsData } from '@/interfaces/ILoginsData.ts'
 import { useSessionStore } from '@/stores/session.ts'
 import type { ISchoolBezirk } from '@/interfaces/ISchoolBezirk.ts'
 import { API_URL } from '@/main.ts'
+import { gemeindenTitleFuse } from '@/assets/gemeinden_hessen_keys.ts'
 
 
 export const useDataStore = defineStore('data',
@@ -53,15 +54,49 @@ export const useDataStore = defineStore('data',
       return result;
     });
 
-    const getSchoolLoginCount = (schoolId: string): number => {
+    const getSchoolLoginCount = (schoolId: string, lastDays?: number): number => {
       if (!data.value) return 0;
       let total = 0;
       if (!data.value.data[schoolId]) return 0;
+      const today = new Date();
       for (const day of data.value.data[schoolId]) {
+        if (lastDays) {
+          const entryDate = new Date(day.day);
+          const diffTime = Math.abs(today.getTime() - entryDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          if (diffDays > lastDays) continue;
+        }
         total += day.entry_count;
       }
       return total;
     }
+
+    const dataAsCityMap: ComputedRef<{
+      max: number,
+      items: { name: string, value: number }[]
+    }> = computed(() => {
+      if (!data.value) return { max: 0, items: [] };
+      const result: { [key: string]: number } = {};
+      for (const bezirk of bezirkList.value) {
+        for (const school of bezirk.Schulen) {
+          const search = gemeindenTitleFuse.search(school.Ort)
+          if (search.length === 0) {
+            console.log(`No match found for ${school.Ort}`);
+            continue;
+          }
+          const locationKey = search[0].item
+          if (locationKey)
+          if (result[locationKey] === undefined) {
+            result[locationKey] = 0;
+          }
+          result[locationKey] += getSchoolLoginCount(school.Id, 14);
+        }
+      }
+      const items = Object.entries(result).map(([name, value]) => ({ name, value }));
+      const max = Math.max(...items.map(item => item.value), 0);
+      console.log({ max, items });
+      return { max, items };
+    });
 
     const activeSchoolList: ComputedRef<{   Id: string, Name: string, Ort: string }[]> = computed(() => {
       if (!data.value) return [];
@@ -92,7 +127,7 @@ export const useDataStore = defineStore('data',
       return rows.join('\n');
     }
 
-    return {data, fetchData, getSchoolInfo: getSchoolName, bezirkList, schoolList, activeSchoolList, combinedLoginCount, getSchoolLoginCount, dataToCsv}
+    return {data, fetchData, getSchoolInfo: getSchoolName, dataAsCityMap, bezirkList, schoolList, activeSchoolList, combinedLoginCount, getSchoolLoginCount, dataToCsv}
   },
 
 )

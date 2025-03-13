@@ -5,6 +5,7 @@ import SchoolSearcher from '@/components/SchoolSearcher.vue'
 import { useSessionStore } from '@/stores/session.ts'
 import MainSchoolsComparedBarChart from '@/components/charts/MainSchoolsComparedBarChart.vue'
 import { type Component, ref, watch } from 'vue'
+import MainSchoolsByCityMap from '@/components/charts/MainSchoolsByCityMap.vue'
 
 const dataStore = useDataStore()
 const sessionStore = useSessionStore()
@@ -13,6 +14,7 @@ dataStore.fetchData()
 const charts: Record<string, Component> = {
   lineSchoolDetail: MainSchoolsComparedLineChart,
   barTotal: MainSchoolsComparedBarChart,
+  cityMap: MainSchoolsByCityMap,
 }
 
 const selectedChart = ref('lineSchoolDetail')
