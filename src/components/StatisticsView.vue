@@ -21,10 +21,6 @@ const selectedChart = ref('lineSchoolDetail')
 
 const autoRefresh = ref(false)
 
-let interval = setInterval(() => {
-  dataStore.fetchData()
-}, 60000)
-
 watch(autoRefresh, (value) => {
   if (value) {
     interval = setInterval(() => {
