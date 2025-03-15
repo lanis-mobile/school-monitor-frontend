@@ -19,7 +19,7 @@ const charts: Record<string, Component> = {
 
 const selectedChart = ref('lineSchoolDetail')
 
-const autoRefresh = ref(true)
+const autoRefresh = ref(false)
 
 let interval = setInterval(() => {
   dataStore.fetchData()
