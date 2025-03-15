@@ -9325,7 +9325,7 @@ export const hessen = {
               "RS": "064320015015",
               "AGS": "06432015",
               "SDV_RS": "064320015015",
-              "GEN": "Münster (Hessen)",
+              "GEN": "Münster",
               "BEZ": "Gemeinde",
               "IBZ": 62,
               "BEM": "--",
@@ -9357,7 +9357,7 @@ export const hessen = {
                   "density_key": "02",
                   "density_desc": "mittlere Besiedlungsdichte"
               },
-              "name": "Münster (Hessen)"
+              "name": "Münster"
           },
           "geometry": {
               "type": "Polygon",
@@ -26603,7 +26603,7 @@ export const hessen = {
               "RS": "064380006006",
               "AGS": "06438006",
               "SDV_RS": "064380006006",
-              "GEN": "Langen (Hessen)",
+              "GEN": "Langen",
               "BEZ": "Stadt",
               "IBZ": 61,
               "BEM": "--",
@@ -26635,7 +26635,7 @@ export const hessen = {
                   "density_key": "02",
                   "density_desc": "mittlere Besiedlungsdichte"
               },
-              "name": "Langen (Hessen)"
+              "name": "Langen"
           },
           "geometry": {
               "type": "Polygon",
@@ -32943,7 +32943,7 @@ export const hessen = {
               "RS": "064400008008",
               "AGS": "06440008",
               "SDV_RS": "064400008008",
-              "GEN": "Friedberg (Hessen)",
+              "GEN": "Friedberg",
               "BEZ": "Stadt",
               "IBZ": 61,
               "BEM": "--",
@@ -32975,7 +32975,7 @@ export const hessen = {
                   "density_key": "02",
                   "density_desc": "mittlere Besiedlungsdichte"
               },
-              "name": "Friedberg (Hessen)"
+              "name": "Friedberg"
           },
           "geometry": {
               "type": "Polygon",
@@ -49132,7 +49132,7 @@ export const hessen = {
               "RS": "065340016016",
               "AGS": "06534016",
               "SDV_RS": "065340016016",
-              "GEN": "Neustadt (Hessen)",
+              "GEN": "Neustadt",
               "BEZ": "Stadt",
               "IBZ": 61,
               "BEM": "--",
@@ -49164,7 +49164,7 @@ export const hessen = {
                   "density_key": "02",
                   "density_desc": "mittlere Besiedlungsdichte"
               },
-              "name": "Neustadt (Hessen)"
+              "name": "Neustadt"
           },
           "geometry": {
               "type": "Polygon",
@@ -50511,7 +50511,7 @@ export const hessen = {
               "RS": "065340021021",
               "AGS": "06534021",
               "SDV_RS": "065340021021",
-              "GEN": "Wetter (Hessen)",
+              "GEN": "Wetter",
               "BEZ": "Stadt",
               "IBZ": 61,
               "BEM": "--",
@@ -50543,7 +50543,7 @@ export const hessen = {
                   "density_key": "03",
                   "density_desc": "gering besiedelt"
               },
-              "name": "Wetter (Hessen)"
+              "name": "Wetter"
           },
           "geometry": {
               "type": "Polygon",
@@ -53475,7 +53475,7 @@ export const hessen = {
               "RS": "065350011011",
               "AGS": "06535011",
               "SDV_RS": "065350011011",
-              "GEN": "Lauterbach (Hessen)",
+              "GEN": "Lauterbach",
               "BEZ": "Stadt",
               "IBZ": 61,
               "BEM": "--",
@@ -53507,7 +53507,7 @@ export const hessen = {
                   "density_key": "02",
                   "density_desc": "mittlere Besiedlungsdichte"
               },
-              "name": "Lauterbach (Hessen)"
+              "name": "Lauterbach"
           },
           "geometry": {
               "type": "Polygon",
@@ -73701,7 +73701,7 @@ export const hessen = {
               "RS": "066340001001",
               "AGS": "06634001",
               "SDV_RS": "066340001001",
-              "GEN": "Borken (Hessen)",
+              "GEN": "Borken",
               "BEZ": "Stadt",
               "IBZ": 61,
               "BEM": "--",
@@ -73733,7 +73733,7 @@ export const hessen = {
                   "density_key": "03",
                   "density_desc": "gering besiedelt"
               },
-              "name": "Borken (Hessen)"
+              "name": "Borken"
           },
           "geometry": {
               "type": "Polygon",
