@@ -21,13 +21,15 @@ const selectedChart = ref('lineSchoolDetail')
 
 const autoRefresh = ref(false)
 
+let interval: number | null = null;
+
 watch(autoRefresh, (value) => {
   if (value) {
     interval = setInterval(() => {
       dataStore.fetchData()
     }, 60000)
   } else {
-    clearInterval(interval)
+    clearInterval(interval!)
   }
 })
 
